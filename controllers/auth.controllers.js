@@ -29,7 +29,7 @@ export const signupRootUser = async (req, res) => {
       });
     }
 
-    const existingUser = await people.findOne({ username, password });  
+    const existingUser = await people.findOne({ username });  
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -75,9 +75,9 @@ export const login = async (req, res) => {
       });
     }
 
-    // const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if (user) {
+    if (passwordMatch) {
       const token = jwt.sign(
         { userId: user._id, username: user.username },
         process.env.JWT_SECRET,
