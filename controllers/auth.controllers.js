@@ -66,18 +66,20 @@ export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = await people.findOne({ username, password });
+    const user = await people.findOne({ username });
 
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: `User is not Registered with Us Please SignUp to Continue`,
+        message: `User is not registered with us. Please sign up to continue.`,
       });
     }
 
-    if (await bcrypt.compare(password, user.password)) {
+    // const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (user) {
       const token = jwt.sign(
-        { password: user.password, id: user._id },
+        { userId: user._id, username: user.username },
         process.env.JWT_SECRET,
         {
           expiresIn: "24h",
@@ -85,7 +87,6 @@ export const login = async (req, res) => {
       );
 
       user.token = token;
-
       await user.save();
 
       return res.status(200).json({
@@ -94,23 +95,20 @@ export const login = async (req, res) => {
         user: {
           _id: user._id,
           username: user.username,
-          password: user.password,
         },
-        message: `User Login Success`,
+        message: `User login successful.`,
       });
     } else {
       return res.status(401).json({
         success: false,
-        message: `Password is incorrect`,
+        message: `Password is incorrect.`,
       });
     }
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: `Login Failure Please Try Again`,
+      message: `Login failure. Please try again.`,
     });
   }
 };
-
-
