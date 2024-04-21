@@ -1,11 +1,11 @@
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import people from "../models/people.model.js";
 import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
 
 dotenv.config();
 
-// Signup Controller for Registering Root User
+// Signup Controller for Registering user
 export const signupRootUser = async (req, res) => {
   try {
     const {
