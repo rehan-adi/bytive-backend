@@ -1,11 +1,11 @@
-import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import people from "../models/people.model.js";
 import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
 
 dotenv.config();
 
-// Signup Controller for Registering Root User
+// Signup Controller for Registering user
 export const signupRootUser = async (req, res) => {
   try {
     const {
@@ -29,7 +29,7 @@ export const signupRootUser = async (req, res) => {
       });
     }
 
-    const existingUser = await people.findOne({ username, password });  
+    const existingUser = await people.findOne({ username });  
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -75,9 +75,9 @@ export const login = async (req, res) => {
       });
     }
 
-    // const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if (user) {
+    if (passwordMatch) {
       const token = jwt.sign(
         { userId: user._id, username: user.username },
         process.env.JWT_SECRET,
