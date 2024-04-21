@@ -56,7 +56,21 @@ const createPerson = async(req, res) => {
          console.log('Failed to delete person', error);
        }
     }
+
+
+    const personById = async(req, res) => {
+          const personId = req.params.id;
+          try {
+            if(!personId) {
+              return res.status(404).json({ message: "Person not found." });
+            }
+            const person = await People.findById(personId);
+            return res.status(200).json(person);
+          } catch (error) {
+            
+          }
+    }
  
 
 
-  export  { createPerson, getAllPerson, updatePerson, deletePerson };
+  export  { createPerson, getAllPerson, updatePerson, deletePerson, personById };
