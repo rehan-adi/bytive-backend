@@ -13,7 +13,7 @@ const createPerson = async(req, res) => {
   }
 
   // get all people
-  const getAllPeople = async(req, res) => {
+  const getAllPerson = async(req, res) => {
     try {
       const people = await People.find();
       res.status(200).json(people);
@@ -23,5 +23,40 @@ const createPerson = async(req, res) => {
   }
 
 
+  const updatePerson = async (req, res) => {
+    const id = req.params.id;
+      try {
+        const person = await People.findByIdAndUpdate(id, req.body, { new: true });
 
-  export  { createPerson, getAllPeople };
+        if(!person){
+          return res.status(404).json({ message: "Person not found." });
+        }
+
+        res.status(200).json(person);
+      } catch (error) {
+        res.status(400).json({ message: error.message });
+        console.log('Failed to update person', error);
+      };
+    }
+
+
+    const deletePerson = async(req, res)  => {
+      const id = req.params.id;
+       try {
+         const deletedPerson = await People.findByIdAndDelete(id);
+
+         if (!deletedPerson) {
+          return res.status(404).json({ message: "Person not found." });
+         }
+
+         res.status(200).json({ message: "Person deleted successfully.", deletedPerson });
+
+       } catch (error) {
+         res.status(400).json({ message: error.message });
+         console.log('Failed to delete person', error);
+       }
+    }
+ 
+
+
+  export  { createPerson, getAllPerson, updatePerson, deletePerson };
